@@ -1,6 +1,7 @@
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 
 from recipes.models import Recipe
+from utils.recipes.factory import make_recipe
 
 
 def home(request):
@@ -9,6 +10,14 @@ def home(request):
     ).order_by('-id')
 
     return render(request, 'recipes/pages/home.html', context={
+        'recipes': recipes,
+    })
+
+
+def home_auto(request):
+    recipes = [make_recipe() for _ in range(20)]
+
+    return render(request, 'recipes/pages/home_auto.html', context={
         'recipes': recipes,
     })
 
