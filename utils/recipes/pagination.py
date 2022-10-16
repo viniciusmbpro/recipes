@@ -33,6 +33,7 @@ def make_pagination_range(
         'stop_range': stop_range,
         'first_page_out_of_range': current_page > middle_range,
         'last_page_out_of_range': stop_range < total_pages,
+        'middle_range': middle_range,
     }
 
 
@@ -48,7 +49,7 @@ def make_pagination(request, queryset, per_page, qty_pages=4):
     pagination_range = make_pagination_range(
         paginator.page_range,
         qty_pages,
-        current_page
+        current_page,
     )
 
     return page_obj, pagination_range

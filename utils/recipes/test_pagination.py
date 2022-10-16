@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from utils.pagination import make_pagination_range
+from utils.recipes.pagination import make_pagination, make_pagination_range
 
 
 class PaginationTest(TestCase):
@@ -13,15 +13,7 @@ class PaginationTest(TestCase):
         self.assertEqual([1, 2, 3, 4], pagination)
 
     def test_first_range_is_static_if_current_page_is_less_than_middle_page(self):  # noqa: E501
-        # Current page = 1 - Qty Page = 2 - Middle Page = 2
-        pagination = make_pagination_range(
-            page_range=list(range(1, 21)),
-            qty_pages=4,
-            current_page=1,
-        )['pagination']
-        self.assertEqual([1, 2, 3, 4], pagination)
-
-        # Current page = 2 - Qty Page = 2 - Middle Page = 2
+        # Current page = 2 - Qty Page = 4 - Middle Page = 2
         pagination = make_pagination_range(
             page_range=list(range(1, 21)),
             qty_pages=4,
@@ -29,7 +21,7 @@ class PaginationTest(TestCase):
         )['pagination']
         self.assertEqual([1, 2, 3, 4], pagination)
 
-        # Current page = 3 - Qty Page = 2 - Middle Page = 2
+        # Current page = 3 - Qty Page = 4 - Middle Page = 2
         # HERE RANGE SHOULD CHANGE
         pagination = make_pagination_range(
             page_range=list(range(1, 21)),
@@ -38,7 +30,7 @@ class PaginationTest(TestCase):
         )['pagination']
         self.assertEqual([2, 3, 4, 5], pagination)
 
-        # Current page = 4 - Qty Page = 2 - Middle Page = 2
+        # Current page = 4 - Qty Page = 4 - Middle Page = 2
         # HERE RANGE SHOULD CHANGE
         pagination = make_pagination_range(
             page_range=list(range(1, 21)),
@@ -48,44 +40,17 @@ class PaginationTest(TestCase):
         self.assertEqual([3, 4, 5, 6], pagination)
 
     def test_make_sure_middle_ranges_are_correct(self):
-        # Current page = 10 - Qty Page = 2 - Middle Page = 2
+        # Current page = 10 - Qty Page = 4 - Middle Page = 2
         # HERE RANGE SHOULD CHANGE
-        pagination = make_pagination_range(
+        middle_range = make_pagination_range(
             page_range=list(range(1, 21)),
             qty_pages=4,
             current_page=10,
-        )['pagination']
-        self.assertEqual([9, 10, 11, 12], pagination)
-
-        # Current page = 14 - Qty Page = 2 - Middle Page = 2
-        # HERE RANGE SHOULD CHANGE
-        pagination = make_pagination_range(
-            page_range=list(range(1, 21)),
-            qty_pages=4,
-            current_page=12,
-        )['pagination']
-        self.assertEqual([11, 12, 13, 14], pagination)
+        )['middle_range']
+        self.assertEqual((4/2), middle_range)
 
     def test_make_pagination_range_is_static_when_last_page_is_next(self):
-        # Current page = 18 - Qty Page = 2 - Middle Page = 2
-        # HERE RANGE SHOULD CHANGE
-        pagination = make_pagination_range(
-            page_range=list(range(1, 21)),
-            qty_pages=4,
-            current_page=18,
-        )['pagination']
-        self.assertEqual([17, 18, 19, 20], pagination)
-
-        # Current page = 19 - Qty Page = 2 - Middle Page = 2
-        # HERE RANGE SHOULD CHANGE
-        pagination = make_pagination_range(
-            page_range=list(range(1, 21)),
-            qty_pages=4,
-            current_page=19,
-        )['pagination']
-        self.assertEqual([17, 18, 19, 20], pagination)
-
-        # Current page = 20 - Qty Page = 2 - Middle Page = 2
+        # Current page = 20 - Qty Page = 4 - Middle Page = 2
         # HERE RANGE SHOULD CHANGE
         pagination = make_pagination_range(
             page_range=list(range(1, 21)),
@@ -94,7 +59,7 @@ class PaginationTest(TestCase):
         )['pagination']
         self.assertEqual([17, 18, 19, 20], pagination)
 
-        # Current page = 21 - Qty Page = 2 - Middle Page = 2
+        # Current page = 21 - Qty Page = 4 - Middle Page = 2
         # HERE RANGE SHOULD CHANGE
         pagination = make_pagination_range(
             page_range=list(range(1, 21)),
@@ -102,3 +67,19 @@ class PaginationTest(TestCase):
             current_page=21,
         )['pagination']
         self.assertEqual([17, 18, 19, 20], pagination)
+
+    def test_make_pagination_is_one_when_current_page_is_value_error(self):
+        # Current page = 20 - Qty Page = 4 - Middle Page = 2
+        class request:
+            def __init__(self):
+                self.GET = {'page': 'abc'}
+
+            def get(self, atr, r):
+                return self.GET[atr]
+
+        current_page = make_pagination(
+            request=request(),
+            queryset=list(range(1, 21)),
+            per_page=9,
+        )[1]['current_page']
+        self.assertEqual(1, current_page)
