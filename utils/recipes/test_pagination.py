@@ -68,7 +68,7 @@ class PaginationTest(TestCase):
         )['pagination']
         self.assertEqual([17, 18, 19, 20], pagination)
 
-    def test_make_pagination_is_one_when_current_page_is_value_error(self):
+    def test_make_pagination_returns_one_when_current_page_is_value_error(self):  # noqa: E501
         # Current page = 20 - Qty Page = 4 - Middle Page = 2
         class request:
             def __init__(self):

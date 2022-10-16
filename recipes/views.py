@@ -1,3 +1,5 @@
+import os
+
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_list_or_404, get_object_or_404, render
@@ -5,9 +7,8 @@ from django.shortcuts import get_list_or_404, get_object_or_404, render
 from recipes.models import Recipe
 from utils.recipes.pagination import make_pagination
 
-import os
-
 PER_PAGE = os.environ.get('PER_PAGE', 6)
+
 
 def home(request):
     recipes = Recipe.objects.filter(
