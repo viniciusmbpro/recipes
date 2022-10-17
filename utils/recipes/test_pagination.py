@@ -67,19 +67,3 @@ class PaginationTest(TestCase):
             current_page=21,
         )['pagination']
         self.assertEqual([17, 18, 19, 20], pagination)
-
-    def test_make_pagination_returns_one_when_current_page_is_value_error(self):  # noqa: E501
-        # Current page = 20 - Qty Page = 4 - Middle Page = 2
-        class request:
-            def __init__(self):
-                self.GET = {'page': 'abc'}
-
-            def get(self, atr, r):
-                return self.GET[atr]
-
-        current_page = make_pagination(
-            request=request(),
-            queryset=list(range(1, 21)),
-            per_page=9,
-        )[1]['current_page']
-        self.assertEqual(1, current_page)
