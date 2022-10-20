@@ -1,9 +1,7 @@
 from django.core.exceptions import ValidationError
 from parameterized import parameterized
 
-from recipes.models import Recipe
-
-from .test_recipe_base import RecipeTestBase
+from .test_recipe_base import Recipe, RecipeTestBase
 
 
 class RecipeModelTest(RecipeTestBase):
@@ -13,18 +11,16 @@ class RecipeModelTest(RecipeTestBase):
 
     def make_recipe_no_defaults(self):
         recipe = Recipe(
-            category=self.make_category(name='Category no default'),
-            author=self.make_author(username='Author no default'),
-            title='Title recipe no default',
-            description='Description recipe no default',
+            category=self.make_category(name='Test Default Category'),
+            author=self.make_author(username='newuser'),
+            title='Recipe Title',
+            description='Recipe Description',
             slug='recipe-slug-for-no-defaults',
             preparation_time=10,
             preparation_time_unit='Minutos',
             servings=5,
             servings_unit='Porções',
             preparation_steps='Recipe Preparation Steps',
-            preparation_steps_is_html=False,
-            is_published=False,
         )
         recipe.full_clean()
         recipe.save()
@@ -45,14 +41,14 @@ class RecipeModelTest(RecipeTestBase):
         recipe = self.make_recipe_no_defaults()
         self.assertFalse(
             recipe.preparation_steps_is_html,
-            msg='Recipe preparation_steps_is_html no is False by default',
+            msg='Recipe preparation_steps_is_html is not False',
         )
 
     def test_recipe_is_published_is_false_by_default(self):
         recipe = self.make_recipe_no_defaults()
         self.assertFalse(
             recipe.is_published,
-            msg='Recipe is_published no is False by default',
+            msg='Recipe is_published is not False',
         )
 
     def test_recipe_string_representation(self):
@@ -61,8 +57,7 @@ class RecipeModelTest(RecipeTestBase):
         self.recipe.full_clean()
         self.recipe.save()
         self.assertEqual(
-            str(self.recipe),
-            needed,
-            msg=f'Recipe string representation must be "{needed}" '
-                f'but "{str(self.recipe)} was received"'
+            str(self.recipe), needed,
+            msg=f'Recipe string representation must be '
+                f'"{needed}" but "{str(self.recipe)}" was received.'
         )
