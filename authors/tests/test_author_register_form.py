@@ -1,10 +1,9 @@
 from unittest import TestCase
 
+from authors.forms import RegisterForm
 from django.test import TestCase as DjangoTestCase
 from django.urls import reverse
 from parameterized import parameterized
-
-from authors.forms.register_form import RegisterForm
 
 
 class AuthorRegisterFormUnitTest(TestCase):
